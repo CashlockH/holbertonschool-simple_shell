@@ -1,41 +1,23 @@
-#include "main.h"
-int main (int ac, char ** av, char** env)
+#include <unistd.h>
+#include <stdio.h>
+
+int main(void)
 {
-        char *buffer;
-        size_t bufsize = 5;
-        pid_t my_pid;
-        int blabla;
-        char *args[] = { "bin", NULL, NULL};
-        buffer = malloc(bufsize*sizeof(char));
-        if(isatty(0) && ac > 0)
-        {
-                while (1)
-                {
-                        printf("#cisfun$ ");
-                        if (getline(&buffer,&bufsize,stdin) == -1)
-                                free(buffer);
-                        if (buffer[strlen(buffer) - 1] == '\n')
-                                buffer[strlen(buffer) - 1] = '\0';
-                        args[2] = buffer;
-                        my_pid = fork();
-                        if (my_pid != 0)
-                                wait(&blabla);
-                        if (my_pid == 0)
-                        {
-                                if (execve(buffer, args, env) == -1)
-                                        perror(av[0]);
-                        }
-                }
-        }
-        else
-        {
-                if (getline(&buffer,&bufsize,stdin) == -1)
-                        free(buffer);
-                if (buffer[strlen(buffer) - 1] == '\n')
-                        buffer[strlen(buffer) - 1] = '\0';
-                args[2] = buffer;
-                if (execve(buffer, args, env) == -1)
-                        perror(av[0]);
-        }
-        return 0;
+    if (isatty(STDIN_FILENO)) {
+        char *argv[] = {"/bin/sh", "-c", "env", 0};
+        char *envp[] = {
+            "HOME=/",
+            "PATH=/bin:/usr/bin",
+            "TZ=UTC0",
+            "USER=beelzebub",
+            "LOGNAME=tarzan",
+            0};
+
+        execve(argv[0], &argv[0], envp);
+        fprintf(stderr, "Oops!\n");
+        return -1;
+    } else {
+        fprintf(stderr, "Not connected to a terminal!\n");
+        return -1;
+    }
 }
