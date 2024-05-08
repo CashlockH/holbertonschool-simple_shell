@@ -1,4 +1,4 @@
-#include "maini.h"
+#include "main.h"
 int main (int ac, char ** av, char** env)
 {
         char *buffer;
