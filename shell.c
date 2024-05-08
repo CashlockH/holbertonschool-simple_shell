@@ -4,7 +4,7 @@
 
 int main(void)
 {
-    char *argv[] = { "/bin/ls", NULL };
+    char *argv[] = { "/bin/ls","", NULL };
     char *envp[] =
     {
         "HOME=/",
