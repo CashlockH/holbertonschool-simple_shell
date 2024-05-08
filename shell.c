@@ -9,27 +9,19 @@ int main (int ac, char ** av, char** env)
         buffer = malloc(bufsize*sizeof(char));
         if(isatty(0) && ac > 0)
         {
-                while (1)
-                {
-                        printf("#cisfun$ ");
-                        if (getline(&buffer,&bufsize,stdin) == -1)
-                                free(buffer);
-                        if (buffer[strlen(buffer) - 1] == '\n')
-                                buffer[strlen(buffer) - 1] = '\0';
-                        args[2] = buffer;
-                        my_pid = fork();
-                        if (my_pid != 0)
-                                wait(&blabla);
-                        if (my_pid == 0)
-                        {
-                                if (execve(buffer, args, env) == -1)
-                                        perror(av[0]);
-                        }
-                }
+               	printf("interactive mode\n");
         }
         else
         {
-		printf("non-interactive mode\n");
-	}
+                if (getline(&buffer,&bufsize,stdin) == -1)
+                        free(buffer);
+                if (buffer[strlen(buffer) - 1] == '\n')
+                        buffer[strlen(buffer) - 1] = '\0';
+                args[2] = buffer;
+                if (execve(buffer, args, env) == -1)
+                        perror(av[0]);
+        }
         return 0;
 }
+
+
