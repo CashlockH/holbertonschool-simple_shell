@@ -22,7 +22,7 @@ int main (int ac, char **av)
                                 wait(&blabla);
                         if (my_pid == 0)
                         {
-                                if (execve(buffer, args, NULL) == -1)
+                                if (execve(buffer, args, environ) == -1)
                                         perror(av[0]);
                         }
                 }
