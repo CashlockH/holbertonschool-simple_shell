@@ -2,7 +2,7 @@
 #include <stdio.h>
 int main(void)
 {
-	char *argv[] = { "/bin/ls", "-l", 0};
+	char *argv[] = { "/bin/ls", 0};
 	char *envp[] = 
 	{
 		"HOME=/",
