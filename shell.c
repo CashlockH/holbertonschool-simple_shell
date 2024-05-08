@@ -1,13 +1,20 @@
-#include "main.h"
+#include "maini.h"
 int main ()
 {
+        char *buffer;
+        size_t bufsize = 5;
+        int nese;
+        buffer = malloc(bufsize*sizeof(char));
         if(isatty(0))
         {
-                printf("interactive mode'dayiq\n");
+                nese = getline(&buffer, &bufsize, stdin);
+                printf("%d", nese);
         }
         else
         {
-                printf("non-interactive mode'dayiq\n");
+                if (getline(&buffer,&bufsize,stdin) == -1)
+                        free(buffer);
+                printf("asdf");
         }
         return 0;
 }
