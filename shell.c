@@ -11,7 +11,7 @@ int main(void)
     	else 
 	{
 		
-	        execve("/bin/ls", args, environ);
+	        execve("/bin/ls", &args[0], environ);
                 fprintf(stderr, "Oops!\n");
                 return -1;
 	}
