@@ -3,7 +3,7 @@
 extern char** environ;
 int main(void)
 {
-	char *args[] = { "/bin/ls", NULL, 0};
+	char *argv[] = { "/bin/ls", NULL, 0};
 	if (isatty(STDIN_FILENO)) 
 	{
 		fprintf(stderr, "Connected to a terminal");
@@ -11,7 +11,7 @@ int main(void)
     	else 
 	{
 		
-	        execve(args[0], &args[0], environ);
+	        execve(argv[0], &argv[0], environ);
                 fprintf(stderr, "Oops!\n");
                 return -1;
 	}
