@@ -1,5 +1,5 @@
-#include "main.h"
-int main (int ac, char **av)
+#include "maini.h"
+int main (int ac, char ** av, char** env)
 {
         char *buffer;
         size_t bufsize = 5;
@@ -7,7 +7,6 @@ int main (int ac, char **av)
         int blabla;
         char *args[] = { "bin", NULL, NULL};
         buffer = malloc(bufsize*sizeof(char));
-	printf("%s", av[0]);
         if(isatty(0) && ac > 0)
         {
                 while (1)
@@ -18,13 +17,13 @@ int main (int ac, char **av)
                         if (buffer[strlen(buffer) - 1] == '\n')
                                 buffer[strlen(buffer) - 1] = '\0';
                         args[2] = buffer;
-			printf("%s", args[2]);
                         my_pid = fork();
                         if (my_pid != 0)
                                 wait(&blabla);
                         if (my_pid == 0)
                         {
-                                printf("ah");
+                                if (execve(buffer, args, env) == -1)
+                                        perror(av[0]);
                         }
                 }
         }
@@ -35,6 +34,8 @@ int main (int ac, char **av)
                 if (buffer[strlen(buffer) - 1] == '\n')
                         buffer[strlen(buffer) - 1] = '\0';
                 args[2] = buffer;
+                if (execve(buffer, args, env) == -1)
+                        perror(av[0]);
         }
         return 0;
 }
