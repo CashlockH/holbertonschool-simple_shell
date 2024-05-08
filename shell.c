@@ -3,8 +3,6 @@ int main (int ac, char ** av, char** env)
 {
         char *buffer;
         size_t bufsize = 5;
-        pid_t my_pid;
-        int blabla;
         char *args[] = { "bin", NULL, NULL};
         buffer = malloc(bufsize*sizeof(char));
         if(isatty(0) && ac > 0)
