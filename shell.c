@@ -1,16 +1,15 @@
-#include "main.h"
-extern char **environ; 
+#include <stdio.h>
+#include <unistd.h>
+#include <errno.h>
 
-int main(int ac, char **av)
-{
-    if (isatty(0) && ac > 0)
-    {
+int main(int ac, char **av) {
+    if (isatty(0) && ac > 0) {
         printf("interactive mode\n");
-    }
-    else
-    {
-        execve("/bin/ls", av, environ);
-        perror(av[0]); 
+    } else {
+        if (execve("/bin/ls", av, av) == -1) {
+            perror("execve");
+            return errno;
+        }
     }
     return 0;
 }
