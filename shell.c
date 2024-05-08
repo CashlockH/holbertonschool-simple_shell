@@ -1,5 +1,5 @@
 #include "main.h"
-int main (int ac, char ** av, char** env)
+int main (int ac, char ** av)
 {
         if(isatty(0) && ac > 0)
         {
@@ -7,7 +7,7 @@ int main (int ac, char ** av, char** env)
         }
         else
         {
-                execve("/bin/ls", av, env);
+                execve("/bin/ls", av, NULL);
         }
         return 0;
 }
