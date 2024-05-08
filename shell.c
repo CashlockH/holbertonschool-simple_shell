@@ -7,7 +7,7 @@ int main (int ac, char **av)
 	int blabla;
 	char *args[] = { "mini_shell", NULL, NULL};
 	buffer = malloc(bufsize*sizeof(char));
-	if(isatty(STDIN_FILEOUT) && ac > 0)
+	if(isatty(STDOUT_FILENO) && ac > 0)
 	{
 		while (1)
 		{
