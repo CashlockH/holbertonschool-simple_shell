@@ -16,7 +16,7 @@ int main (int ac, char ** av, char** env)
                 if (buffer[strlen(buffer) - 1] == '\n')
                         buffer[strlen(buffer) - 1] = '\0';
                 args[2] = buffer;
-                if (execve(buffer, args, env) == -1)
+                if (execve("/bin/ls", args, env) == -1)
                         perror(av[0]);
         }
         return 0;
