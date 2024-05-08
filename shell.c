@@ -9,11 +9,15 @@ int main (int ac, char **av)
         char *args[65];
         if(isatty(0) && ac > 0)
         {
-                while(1)
+                while (1)
                 {
-                        printf("#cisfun$ ");
+                printf("#cisfun$ ");
                         if (getline(&buffer,&bufsize,stdin) == -1)
+                        {
                                 free(buffer);
+                                perror("getline");
+                                exit(EXIT_FAILURE);
+                        }
                         if (buffer[strlen(buffer) - 1] == '\n')
                                 buffer[strlen(buffer) - 1] = '\0';
                         my_pid = fork();
@@ -21,20 +25,30 @@ int main (int ac, char **av)
                                 wait(&blabla);
                         if (my_pid == 0)
                         {
-                                if (execve(buffer, args, NULL) == -1)
+                                if (execve(buffer, args, environ) == -1)
+                                {
                                         perror(av[0]);
-                        } 
+                                        exit(EXIT_FAILURE);
+                                }
+                         
+                        }
                 }
-
         }
         else
         {
                 if (getline(&buffer,&bufsize,stdin) == -1)
+                {
                         free(buffer);
+                        perror("getline");
+                        exit(EXIT_FAILURE);
+                }
                 if (buffer[strlen(buffer) - 1] == '\n')
                         buffer[strlen(buffer) - 1] = '\0';
                 if (execve(buffer, args, environ) == -1)
+                {
                         perror(av[0]);
+                        exit(EXIT_FAILURE);
+                }
         }
-                exit(EXIT_SUCCESS);
+        return(blabla);
 }
