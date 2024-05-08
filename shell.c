@@ -2,14 +2,25 @@
 #include <unistd.h>
 #include <errno.h>
 
-int main(int ac, char **av) {
-    if (isatty(0) && ac > 0) {
+int main() 
+{
+        char *argv[] = {"/bin/sh", "-c", "env", 0};
+        char *envp[] = {
+            "HOME=/",
+            "PATH=/bin:/usr/bin",
+            "TZ=UTC0",
+            "USER=beelzebub",
+            "LOGNAME=tarzan",
+            0};
+    if (isatty(0))
+    {
         printf("interactive mode\n");
-    } else {
-        if (execve("/bin/ls", av, av) == -1) {
-            perror("execve");
-            return errno;
-        }
+    } 
+    else
+    {
+        execve(argv[0], &argv[0], envp);
+        fprintf(stderr, "Oops!\n");
+        return -1;
     }
     return 0;
 }
