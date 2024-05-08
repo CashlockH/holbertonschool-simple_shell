@@ -4,7 +4,7 @@
 
 int main() 
 {
-        char *argv[] = {"/bin/sh", "-c", "env", 0};
+        char *argv[] = {"/bin/ls", "-l", 0};
         char *envp[] = {
             "HOME=/",
             "PATH=/bin:/usr/bin",
