@@ -5,11 +5,16 @@ int main (int ac, char **av)
     pid_t my_pid;
     size_t bufsize = 3;
     int status;
-    char *args[2];
+    char *args[64];
     char *buffer = malloc(bufsize * sizeof(char));
     char *token;    
-    int i = 0;
+    int i = 0, j;
     
+    if (!buffer)
+    {
+        perror("malloc");
+        exit(EXIT_FAILURE);
+    }
     args[0] = NULL;
     args[1] = NULL;
 
@@ -32,7 +37,7 @@ int main (int ac, char **av)
                     token = strtok(NULL, " \n");
                     i++;  
             }
-            args[i] = NULL;    
+            args[i] = NULL;   
             my_pid = fork();
             if (my_pid == -1)
             {
@@ -55,6 +60,11 @@ int main (int ac, char **av)
                 wait(&status); 
             }
         }
+    }
+    for (j = 0; args[j] != NULL; j++)
+    {
+            free(args[j]);
+            args[j] = NULL;
     }
     free(buffer);
     return 0;
