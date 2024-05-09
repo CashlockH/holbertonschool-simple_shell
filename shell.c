@@ -38,7 +38,7 @@ int main (int ac, char **av)
                         {
                                     waitpid(my_pid, &status, 0);
                                     if (WIFEXITED(status) && WEXITSTATUS(status) == 0)
-                                        printf("OK\n");
+                                        exit(EXIT_SUCCESS);
                         }
                 }
         }
@@ -54,7 +54,7 @@ int main (int ac, char **av)
                         buffer[strlen(buffer) - 1] = '\0';
                 if (execve(buffer, args, environ) == -1)
                 {
-                        perror(av[0]);
+                        fprintf(stderr, "%s: 1: %s: not found\n", av[0], buffer);
                         exit(EXIT_FAILURE);
                 }
         }
