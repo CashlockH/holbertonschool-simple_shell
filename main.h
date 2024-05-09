@@ -6,4 +6,5 @@
 	#include <string.h>
 	#include <stdlib.h>
 	#include <unistd.h>
+	void space_remover(char *str);
 #endif
