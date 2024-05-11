@@ -1,19 +1,28 @@
 #include "main.h"
+void _strcat(char *string1, char *string2)
+{
+  int i = 0, j = 0;
+  while(string1[i] != '\0')
+      i++;
+  while(string2[j] != '\0')
+    {
+      string1[i] = string2[j];
+      j++, i++;
+    }
+  string1[i] = string2[j];
+}
 void _getenv(const char* name, char *args[64])
 {
     extern char** environ;
     int j = 0;
     size_t i;
-
     for (i = 0; environ[i] != NULL; i++)
     {
         char* env_var = strdup(environ[i]);
         char* token = strtok(env_var, "=");
-
         if (token != NULL && strcmp(token, name) == 0)
         {
             token = strtok(NULL, ":");
-
             while (token != NULL)
             {
                 args[j] = strdup(token), j++;
@@ -36,37 +45,25 @@ void _printenv(char **envi)
                 }
 }
 
-
-
 int args_writer(char *arv[64], char *code_holder)
 {
     char *argu[64];
     char *nese = strdup(code_holder);
     int i = 0, j = 0;
-    _getenv("PATH", argu);
+        _getenv("PATH", argu);
     while (argu[i])
     {
-        size_t total_length = strlen(argu[i]) + strlen("/") + strlen(nese) + 1;
-        char *temp = malloc(total_length);
-        if (temp == NULL)
+        _strcat(argu[i], "/");
+        _strcat(argu[i], nese);
+        if (access(argu[i], X_OK) == 0)
         {
-            perror("malloc");
-            exit(EXIT_FAILURE);
-        }
-        strcpy(temp, argu[i]);
-        strcat(temp, "/");
-        strcat(temp, nese);
-        if (access(temp, X_OK) == 0)
-        {
-            arv[j] = strdup(temp);
+            arv[j] = strdup(argu[i]);
             j++;
-            free(temp);
             break;
         }
-        free(temp);
         i++;
     }
-    free(nese); 
+    free(nese);
     return 1;
 }
 int main(int ac, char **av)
@@ -85,76 +82,7 @@ int main(int ac, char **av)
         }
         args[0] = NULL;
         args[1] = NULL;
-        if (isatty(0) && ac > 0)
-                {
-                        while (1)
-                        {       i = 0;
-                                printf("$ ");
-                                if (getline(&buffer, &bufsize, stdin) != -1)
-                                {
-                                        if (buffer[strlen(buffer) - 1] == '\n')
-                                                buffer[strlen(buffer) - 1] = '\0';
-                                        token = strtok(buffer, " \n");
-
-                                        if (token == NULL)
-                                        {
-                                                free(buffer);
-                                                exit(EXIT_SUCCESS);
-                                        }
-                                        while (token != NULL)
-                                        {
-                                                args[i] = strdup(token);
-                                                if (!args[i])
-                                                {
-                                                        perror("strdup");
-                                                        free(buffer);
-                                                        exit(EXIT_FAILURE);
-                                                }
-                                                token = strtok(NULL, " \n");
-                                                i++;
-
-                                        }
-                                        args[i] = NULL;
-
-                                        if (strcmp(args[0], "exit") == 0)
-                                                break;
-                                        my_pid = fork();
-
-                                        if (my_pid == -1)
-                                        {
-                                                perror("fork");
-                                                exit(EXIT_FAILURE);
-                                        }
-                                        else if (my_pid == 0)
-                                        {
-
-                                                if (strchr(args[0], '/') == 0)
-                                                {
-                                                        args_writer(args, args[0]);
-                                                }
-                                                if (execve(args[0], args, environ) == -1)
-                                                {
-                                                        fprintf(stderr, "%s: 1: %s: not found\n", av[0], buffer);
-                                                        free(buffer);
-                                                        for (j = 0; j < i; j++)
-                                                        free(args[j]);
-                                                        exit(EXIT_FAILURE);
-                                                }
-                                        }
-                                        else
-                                        {
-                                        wait(&status);
-                                        }
-                                        for (j = 0; j < i; j++)
-                                                free(args[j]);
-                                                                }
-                                else
-                                        break;
-                        }
-                }
-        else
-        {
-                while (getline(&buffer, &bufsize, stdin) != -1)
+        while (getline(&buffer, &bufsize, stdin) != -1 && ac > 0)
                 {
                         i = 0;
                         if (buffer[strlen(buffer) - 1] == '\n')
@@ -226,7 +154,6 @@ int main(int ac, char **av)
                         for (j = 0; args[j] != NULL; j++)
                                 free(args[j]);
                 }
-        }
         free(buffer);
         return (0);
 }
