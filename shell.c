@@ -1,49 +1,32 @@
 #include "main.h"
-int _path(const char *name)
-{
-        int i = 0;
-        extern char **environ;
-        char* env_var = NULL;
-        char* token;
-        while (environ[i] != NULL)
-        {
-                env_var = strdup(environ[i]);
-                token = strtok(env_var, "=");
-                if(token != NULL && strcmp(name, token) == 0)
-                {
-                        token = strtok(env_var, "=");
-                        if (strcmp(token, "") == 0)
-                        {
-                                free(env_var);
-                                return 1;
-                        }
-                }
-                i++;
-        }
-        if(env_var != NULL)
-                free(env_var);
-        return 0;
-}
 void _getenv(const char* name, char *args[64])
 {
     extern char** environ;
     int j = 0;
     size_t i;
+        char *env_var;
+        char *token, *zoken;
     for (i = 0; environ[i] != NULL; i++)
     {
-        char* env_var = strdup(environ[i]);
-        char* token = strtok(env_var, "=");
-
+        env_var = strdup(environ[i]);
+        token = strtok(env_var, "=");
         if (token != NULL && strcmp(token, name) == 0)
         {
-            token = strtok(NULL, ":");
-
-            while (token != NULL)
+            token = strtok(NULL, "=");
+                if(token == NULL)
+                {
+                        free(env_var);
+                        break;
+                }
+                zoken = strtok(token, ":");
+                fflush(stdout);
+            while (token != NULL && zoken != NULL)
             {
                 args[j] = strdup(token), j++;
                 token = strtok(NULL, ":");
             }
             args[j] = NULL;
+                free(env_var);
             break;
         }
         free(env_var);
@@ -63,15 +46,16 @@ void _printenv(char **envi)
 
 
 
-void args_writer(char *arv[64], char *code_holder)
+int args_writer(char *arv[64], char *code_holder)
 {
     char *args[64];
     char *nese = strdup(code_holder);
     int i = 0, j = 0;
         args[0] = NULL;
         _getenv("PATH", args);
+
     while (args[i])
-    {
+    {        
         strcat(args[i], "/");
         strcat(args[i], nese);
         if (access(args[i], X_OK) == 0)
@@ -83,12 +67,13 @@ void args_writer(char *arv[64], char *code_holder)
         i++;
     }
     free(nese);
+    return 1;
 }
 int main(int ac, char **av)
 {
         pid_t my_pid;
         size_t bufsize = 64;
-        int status, status_tutan = 5, nese = 0, path_tutan;
+        int status, status_tutan = 5, nese = 0;
         char *args[64];
         char *buffer = malloc(bufsize * sizeof(char));
         char *token;
@@ -140,6 +125,8 @@ int main(int ac, char **av)
                                         exit(0);
                                 else if (status_tutan == 512)
                                         exit(2);
+                                else
+                                        exit(EXIT_SUCCESS);
                         }
                         if (strcmp(args[0], "env") == 0)
                         {        
@@ -163,9 +150,7 @@ int main(int ac, char **av)
                                 
                                 if (strchr(args[0], '/') == 0)
                                 {
-                                        path_tutan = _path("PATH");
-                                        if(path_tutan != 1)
-                                                args_writer(args, args[0]);
+                                        args_writer(args, args[0]);
                                 }
                                 if (execve(args[0], args, environ) == -1)
                                 {
