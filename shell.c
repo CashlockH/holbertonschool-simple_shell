@@ -26,6 +26,26 @@ void _getenv(const char* name, char *args[64])
     }
 }
 
+void remove_spaces(char *str) {
+    int count = 0, i;
+    int found_first_letter = 0; 
+    for (i = 0; str[i]; i++) 
+    {
+        if (!found_first_letter) 
+        {
+            if (str[i] != ' ' || str[i] != '\t') 
+            {
+                found_first_letter = 1;
+                str[count++] = str[i];
+            }
+        } else 
+        {
+            str[count++] = str[i];
+        }
+    }
+    str[count] = '\0';
+}
+
 void _printenv(char **envi)
 {
         int i = 0;
@@ -75,6 +95,7 @@ int main(int ac, char **av)
 
         while (getline(&buffer, &bufsize, stdin) != -1 && ac > 0)
         {
+                remove_spaces(buffer);
                 args[0] = NULL;
                 args[1] = NULL;
                 i = 0;
