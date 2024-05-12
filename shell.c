@@ -1,4 +1,29 @@
 #include "main.h"
+int _path(const char *name)
+{
+        int i = 0;
+        extern char **environ;
+        char* env_var = NULL;
+        char* token;
+        while (environ[i] != NULL)
+        {
+                env_var = strdup(environ[i]);
+                token = strtok(env_var, "=");
+                if(token != NULL && strcmp(name, token) == 0)
+                {
+                        token = strtok(env_var, "=");
+                        if (strcmp(token, ""))
+                        {
+                                free(env_var);
+                                return 1;
+                        }
+                }
+                i++;
+        }
+        if(env_var != NULL)
+                free(env_var);
+        return 0;
+}
 void _getenv(const char* name, char *args[64])
 {
     extern char** environ;
@@ -52,11 +77,6 @@ void args_writer(char *arv[64], char *code_holder)
         if (access(args[i], X_OK) == 0)
         {
             arv[j] = strdup(args[i]);
-            if (arv[j] == NULL)
-            {
-                perror("strdup");
-                exit(EXIT_FAILURE);
-            }
             break;
             j++;
         }
@@ -68,7 +88,7 @@ int main(int ac, char **av)
 {
         pid_t my_pid;
         size_t bufsize = 64;
-        int status, status_tutan = 5, nese = 0;
+        int status, status_tutan = 5, nese = 0, path_tutan;
         char *args[64];
         char *buffer = malloc(bufsize * sizeof(char));
         char *token;
@@ -143,7 +163,9 @@ int main(int ac, char **av)
                                 
                                 if (strchr(args[0], '/') == 0)
                                 {
-                                        args_writer(args, args[0]);
+                                        path_tutan = _path("PATH");
+                                        if(path_tutan != 1)
+                                                args_writer(args, args[0]);
                                 }
                                 if (execve(args[0], args, environ) == -1)
                                 {
