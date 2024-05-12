@@ -1,8 +1,8 @@
 #include "main.h"
-void _getenv(const char* name, char *args[64])
+int custom_getenv(const char* name, char *args[64])
 {
     extern char** environ;
-    int j = 0;
+    int j = 0, a = 0;
     size_t i;
         char *env_var;
         char *token, *zoken;
@@ -12,14 +12,15 @@ void _getenv(const char* name, char *args[64])
         token = strtok(env_var, "=");
         if (token != NULL && strcmp(token, name) == 0)
         {
+              a = 0;   
             token = strtok(NULL, "=");
                 if(token == NULL)
                 {
                         free(env_var);
+                        a = 1;
                         break;
                 }
-                zoken = strtok(token, ":");
-                fflush(stdout);
+                zoken = strtok(token, ":");        
             while (token != NULL && zoken != NULL)
             {
                 args[j] = strdup(token), j++;
@@ -29,8 +30,11 @@ void _getenv(const char* name, char *args[64])
                 free(env_var);
             break;
         }
+        else
+                a = 1;
         free(env_var);
     }
+        return a;
 }
 
 
@@ -50,9 +54,9 @@ int args_writer(char *arv[64], char *code_holder)
 {
     char *args[64];
     char *nese = strdup(code_holder);
-    int i = 0, j = 0;
+    int i = 0, j = 0, geti = 0;
         args[0] = NULL;
-        _getenv("PATH", args);
+        geti = custom_getenv("PATH", args);
 
     while (args[i])
     {        
@@ -61,13 +65,15 @@ int args_writer(char *arv[64], char *code_holder)
         if (access(args[i], X_OK) == 0)
         {
             arv[j] = strdup(args[i]);
+            free(args[i]);    
             break;
             j++;
         }
         i++;
     }
+        
     free(nese);
-    return 1;
+    return geti;
 }
 int main(int ac, char **av)
 {
@@ -77,7 +83,7 @@ int main(int ac, char **av)
         char *args[64];
         char *buffer = malloc(bufsize * sizeof(char));
         char *token;
-        int i = 0, j;
+        int i = 0, j, writer = 0;
         if (!buffer)
         {
                 perror("malloc");
@@ -130,14 +136,18 @@ int main(int ac, char **av)
                         }
                         if (strcmp(args[0], "env") == 0)
                         {        
-        
+
                                 free(buffer);
                                 for(j = 0; j < i; j++)
                                         free(args[j]);
-        
+
                                 _printenv(environ);
                                 exit(EXIT_SUCCESS);
-        
+
+                        }
+                        if (strchr(args[0], '/') == 0)
+                        {
+                                writer = args_writer(args, args[0]);
                         }
                         my_pid = fork();
                         if (my_pid == -1)
@@ -147,12 +157,16 @@ int main(int ac, char **av)
                         }
                         else if (my_pid == 0)
                         {
-                                
-                                if (strchr(args[0], '/') == 0)
+
+                                if (writer == 1)
                                 {
-                                        args_writer(args, args[0]);
+                                        fprintf(stderr, "%s: 1: %s: not found\n", av[0], buffer);
+                                        free(buffer);
+                                        for (j = 0; j < i; j++)
+                                        free(args[j]);
+                                        exit(127);
                                 }
-                                if (execve(args[0], args, environ) == -1)
+                                else if (execve(args[0], args, environ) == -1)
                                 {
                                         fprintf(stderr, "%s: 1: %s: not found\n", av[0], buffer);
                                         free(buffer);
