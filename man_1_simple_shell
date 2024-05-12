@@ -1,34 +1,51 @@
-# NAME
+.TH SIMPLE_SHELL 1 "May 2024" "1.1" "Simple Shell Manual"
+.SH NAME
+hsh - a basic command interpreter
+.SH SYNOPSIS
+.B hsh
+[\fIcommand [argument]\fR | \fIcommand_file [argument...]\fR]
+.br
+.SH DESCRIPTION
+The \fBhsh\fR is a minimal command interpreter that runs commands provided via a command line or a file. It can operate in both interactive and non-interactive modes. In interactive mode, users can enter commands directly, while in non-interactive mode, commands can be specified through command-line arguments or a file.
+.PP
+When started without any arguments, the interactive mode prompts the user for commands continuously until an EOF (End-of-File) character is received.
+.PP
+In non-interactive mode, the shell executes the provided command(s) and exits upon completion.
+.SH OPERANDS
+Supported operands are:
+.TP
+.B command_file
+Specifies the path to a file containing commands to be executed.
+.TP
+.B command_name
+Represents the name of the command to execute.
+.TP
+.B command_string
+A string interpreted as one or more commands, including the command name and arguments.
+.SH EXIT STATUS
+The shell returns the following exit status values:
+.TP
+.B 0
+The script contained only blank lines or comments.
+.TP
+.B 1-125
+Errors were detected during non-interactive execution, such as syntax errors or variable assignment errors.
+.TP
+.B 127
+The specified command file could not be found during non-interactive execution.
+.SH ENVIRONMENT VARIABLES
+.B hsh\fR recognizes the following environment variables:
+.TP
+.B PATH
+A list of directories, separated by colons, where the shell searches for executable files.
+.SH AUTHORS
+Created by 
+.br
+Hasanli Ilyas   <ilyashesenli48@gmail.com>
+.br
+Ismayilov Farid <ismayilovferid34@gmail.com>.
+.SH BUG REPORTS
+To report bugs, contact <ilyashesenli48@gmail.com> & <ismayilovferid34@gmail.com>.
 
-hsh - a Simple Shell project for Holberton School
-
-# SUMMARY
-
-**hsh**
-
-# DESCRIPTION
-
-The `hsh` program is a simple shell implementation developed as part of the curriculum at Holberton School. It aims to replicate the basic functionality of the `/bin/sh` shell, including interactive and non-interactive modes.
-
-# OBJECTIVES
-
-- Develop a basic shell program following specific requirements and guidelines.
-- Memory management to avoid memory leaks.
-- Apply the Betty style for consistent code formatting.
-
-# REQUIREMENTS
-
-- Source code files should use the provided flags `-Wall -Werror -Wextra -pedantic -std=gnu89` during compilation.
-- All files adhere to the Betty style guidelines and pass checks using betty *.c.
-- No more than 40 lines of code per function.
-- All header files should be include guarded to prevent multiple inclusions.
-- The program should produce the same output and error messages as `/bin/sh`.
-
-# COMPILATION
-
-The `hsh` shell can be compiled using the following command:
-- ./hsh
-
-# COLLABORATORS 
-Ilyas Hasanli
-Farid Ismayilov
+.SH SEE ALSO
+.BR bash (1)
