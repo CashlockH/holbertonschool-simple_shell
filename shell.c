@@ -12,7 +12,7 @@ int _path(const char *name)
                 if(token != NULL && strcmp(name, token) == 0)
                 {
                         token = strtok(env_var, "=");
-                        if (strcmp(token, ""))
+                        if (strcmp(token, "") == 0)
                         {
                                 free(env_var);
                                 return 1;
