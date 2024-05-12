@@ -52,6 +52,11 @@ void args_writer(char *arv[64], char *code_holder)
         if (access(args[i], X_OK) == 0)
         {
             arv[j] = strdup(args[i]);
+            if (arv[j] == NULL)
+            {
+                perror("strdup");
+                exit(EXIT_FAILURE);
+            }
             break;
             j++;
         }
